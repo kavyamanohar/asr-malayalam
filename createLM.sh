@@ -103,12 +103,6 @@ train_lang=lang_bigram
 train_folder=train
 
 
-#Clearing data directory contents from prior execution of this script
-rm -rf $data_dir/local/dict/
-rm -rf $data_dir/local/$train_dict/lexiconp.txt $data_dir/local/$train_lang $data_dir/local/tmp_$train_lang $data_dir/$train_lang
-rm -rf $data_dir/$train_folder/
-
-
 mkdir -p $data_dir/local/dict
 mkdir $data_dir/local/tmp_$train_lang
 mkdir $data_dir/$train_folder
@@ -173,7 +167,7 @@ $kaldi_root_dir/src/fstbin/fstisstochastic  $data_dir/$train_lang/G.fst
 
 
 echo ============================================================================
-echo "                   End of Script             	        "
+echo "                   End of Language Model Creation             	        "
 echo ============================================================================
 
 
