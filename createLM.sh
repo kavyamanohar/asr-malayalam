@@ -15,7 +15,6 @@
 #
 #   language_dir/
 #       lexicon.txt
-#       lexicon_nosil.txt
 #       lm_train.txt
 #   
 # OUTPUT:
@@ -90,6 +89,7 @@ fi
 language_dir=$1
 data_dir=$2
 
+#Defines the names of silence phone and spoken noice phone
 silencephone=SIL
 spokennoicephone=SPN
 
@@ -144,12 +144,6 @@ echo $spokennoicephone >> $dict_dir/silence_phones.txt
 
 touch $dict_dir/extra_phones.txt $dict_dir/extra_questions.txt
 
-
-echo ============================================================================
-echo "                  Preparing the Language Model Files    	        "
-echo ============================================================================
-
-
 n_gram=2 # This specifies bigram or trigram. for bigram set n_gram=2 for tri_gram set n_gram=3
 
 echo ============================================================================
@@ -173,7 +167,8 @@ $kaldi_root_dir/tools/irstlm/bin/build-lm.sh -i $data_dir/$train_folder/lm_train
 
 gunzip -c  $data_dir/local/tmp_$train_lang/lm_phone_bg.ilm.gz | utils/find_arpa_oovs.pl $data_dir/$train_lang/words.txt  >  $data_dir/local/tmp_$train_lang/oov.txt
 
-gunzip -c $data_dir/local/tmp_$train_lang/lm_phone_bg.ilm.gz | grep -v '<s> <s>' | grep -v '<s> </s>' | grep -v '</s> </s>' | grep -v 'SIL' | $kaldi_root_dir/src/lmbin/arpa2fst - | fstprint | utils/remove_oovs.pl $data_dir/local/tmp_$train_lang/oov.txt | utils/eps2disambig.pl | utils/s2eps.pl | fstcompile --isymbols=$data_dir/$train_lang/words.txt --osymbols=$data_dir/$train_lang/words.txt --keep_isymbols=false --keep_osymbols=false | fstrmepsilon >  $data_dir/$train_lang/G.fst 
+gunzip -c $data_dir/local/tmp_$train_lang/lm_phone_bg.ilm.gz | grep -v '<s> <s>' | grep -v '<s> </s>' | grep -v '</s> </s>' | grep -v 'SIL' | $kaldi_root_dir/src/lmbin/arpa2fst - | fstprint | utils/remove_oovs.pl $data_dir/local/tmp_$train_lang/oov.txt | utils/eps2disambig.pl | utils/s2eps.pl | fstcompile --isymbols=$data_dir/$train_lang/words.txt --osymbols=$data_dir/$train_lang/words.txt --keep_isymbols=false --keep_osymbols=false | fstrmepsilon >  $data_dir/$train_lang/G.fst
+
 $kaldi_root_dir/src/fstbin/fstisstochastic  $data_dir/$train_lang/G.fst 
 
 
