@@ -11,7 +11,7 @@ The source code of `/asr_malayalam` has to be placed in the `/egs` directory of 
 `./run.sh ./inputdirectory`
 
 input directory has the following structure:
-
+```
 ├── language -> symlink/to/language/model/source (contains lm_train.txt, lexicon.txt)
 ├── test
 │   └── corpus1
@@ -23,6 +23,6 @@ input directory has the following structure:
     |      └── metadata.tsv -> symlink/to/audio/files/metadata (metadata.tsv)
     └── corpus3
         ├── audio -> symlink/to/audio/files_directory (utt1.wav, utt2.wav)
-        └── metadata.tsv -> symlink/to/audio/files/metadata (metadata.tsv)
-
+        └── metadata.tsv -> symlink/to/audio/files/metadata (metadata.tsv)```
+```
 metadata.tsv is a tab separated values of utterence_is, speaker_id, file_name in audio folder, transcript in Malayalam script.
