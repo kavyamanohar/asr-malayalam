@@ -11,7 +11,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 
-Remove existing data
+## Remove existing data
 rm -rf data
 rm -rf exp
 rm -rf mfcc
@@ -19,7 +19,7 @@ rm -rf mfcc
 input_dir=$1
 language_dir=$1/language
 data_dir=./data
-train_source=$1/train
+train_dir=$1/train
 
 echo ============================================================================
 echo "                  Running the script for Language Model Creation   	        "
@@ -30,10 +30,12 @@ echo ===========================================================================
 echo ============================================================================
 echo "                  Preparing Audio Training Data   	        "
 echo ============================================================================
-
-./audiodataprep.sh $train_source $data_dir
-
-
+rm -rf $data_dir/train
+mkdir $data_dir/train
+for d in $train_dir/* ; do
+    echo "Corpus $d audio preparation"
+    ./audiodataprep.sh $d $data_dir
+done
 echo ============================================================================
 echo "                   End of Script             	        "
 echo ============================================================================

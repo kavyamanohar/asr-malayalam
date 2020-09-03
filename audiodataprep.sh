@@ -17,7 +17,7 @@
         # └── audio
         #   └──utt1.wav
         #   └──utt2.wav
-        #   └──transcript.tsv (utt_id   spk_id   transcript)
+        # └──transcript.tsv (utt_id   spk_id   transcript)
 #   data_directory (after running createLm.sh successfully)
 
 # OUTPUT:
@@ -31,35 +31,40 @@ fi
 audio_corpus=$1
 data_dir=$2
 
-#Read path of wave files and store it as a temporary file wavefilepaths.txt 
-realpath $audio_corpus/audio/*.wav > $data_dir/train/wavefilepaths.txt
+#Read path of wave files and store it to audiopath variable
+audiopath=$(realpath $audio_corpus/audio)
 
-# echo "Creating the list of utterence IDs"
-
-# #The function is to extract the utterance id
-# cat ./data/$folder/wavefilepaths.txt | xargs -l basename -s .wav > ./data/$folder/utt
-
-
-# echo "Creating the list of utterence IDs mapped to absolute file paths of wavefiles"
+echo "Creating the list of utterence IDs"
+#The function is to extract the utterance id
+awk '{print $1}' FS='\t' $audio_corpus/metadata.tsv > $data_dir/train/temputt
 
 
-# #Create wav.scp mapping from uttrence id to absolute wave file paths
-# paste ./data/$folder/utt ./data/$folder/wavefilepaths.txt > ./data/$folder/wav.scp
+echo "Creating the list of speaker IDs"
+#Create speaker id list
+awk '{print $2}' FS='\t' $audio_corpus/metadata.tsv > $data_dir/train/tempspk
+
+echo "Creating the list of utterence IDs mapped to absolute file paths of wavefiles"
+awk '{print $3}' FS='\t' $audio_corpus/metadata.tsv > $data_dir/train/tempfilename
+sed -e 's,^,'"$audiopath"/',' -i $data_dir/train/tempfilename
+paste $data_dir/train/temputt $data_dir/train/tempfilename > $data_dir/train/tempwav.scp
+
+echo "Creating the list of Utterance IDs mapped to corresponding speaker Ids"
+
+paste $data_dir/train/temputt $data_dir/train/tempspk > $data_dir/train/temputt2spk
+
+echo "Creating the list of Speaker IDs mapped to corresponding list of utterance Ids"
+
+./utils/utt2spk_to_spk2utt.pl $data_dir/train/temputt2spk > $data_dir/train/tempspk2utt
+
+echo "Creating the file of transcripts"
+awk '{print $1 "\t" $4}' FS='\t' $audio_corpus/metadata.tsv > $data_dir/train/temptext
 
 
-# echo "Creating the list of speaker IDs"
+cat $data_dir/train/temputt >> $data_dir/train/utt
+cat $data_dir/train/tempspk >> $data_dir/train/spk
+cat $data_dir/train/temputt2spk >> $data_dir/train/utt2spk
+cat $data_dir/train/tempspk2utt >> $data_dir/train/spk2utt
+cat $data_dir/train/tempwav.scp >> $data_dir/train/wav.scp
+cat $data_dir/train/temptext >> $data_dir/train/text
 
-# #Create speaker id list
-# cat ./data/$folder/utt | cut -d 's' -f 1 > ./data/$folder/spk
-
-# echo "Creating the list of Utterance IDs mapped to corresponding speaker Ids"
-
-# #Create utt2spk
-# paste ./data/$folder/utt ./data/$folder/spk > ./data/$folder/utt2spk
-
-# echo "Creating the list of Speaker IDs mapped to corresponding list of utterance Ids"
-
-# #Create spk2utt
-# ./utils/utt2spk_to_spk2utt.pl ./data/$folder/utt2spk > ./data/$folder/spk2utt
-
-# rm ./data/$folder/wavefilepaths.txt
+rm $data_dir/train/temp*
