@@ -100,7 +100,7 @@ kaldi_root_dir='../..'
 
 train_dict=dict
 train_lang=lang_bigram
-train_folder=train
+train_folder=train_lm
 
 
 mkdir -p $data_dir/local/dict
