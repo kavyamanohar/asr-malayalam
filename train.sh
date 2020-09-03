@@ -5,6 +5,12 @@
 
 #Choose the Phonetic modeling here
 
+if [ "$#" -ne 1 ]; then
+    echo "ERROR: $0"
+    echo "USAGE: $0 <data_dir>
+    exit 1
+fi
+
 train_dict=dict
 train_lang=lang_bigram
 exp=exp

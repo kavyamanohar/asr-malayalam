@@ -14,17 +14,18 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-
-# Remove existing data
-rm -rf data
-rm -rf exp
-rm -rf mfcc
-
 input_dir=$1
 language_dir=$1/language
 data_dir=./data
 train_dir=$1/train
 test_dir=$1/test
+
+Remove existing data
+rm -rf data
+rm -rf exp
+rm -rf mfcc
+
+
 
 echo ============================================================================
 echo "                  Running the script for Language Model Creation   	        "
@@ -52,40 +53,33 @@ echo ===========================================================================
 ./extractfeatures.sh $data_dir train
 
 echo ============================================================================
-echo "     Acoustic Model Training  	        "
+echo "     Acoustic Model Training Compiling Decoding Graphs  	        "
 echo ============================================================================
+./utils/fix_data_dir.sh $data_dir/train
 
 ./train.sh $data_dir 
 
 echo ============================================================================
-echo "     Compiling Decoding Graphs  	        "
-echo ============================================================================
-
-echo ============================================================================
-echo "     Testing Graphs  	        "
+echo "     Testing   	        "
 echo ============================================================================
 
 
 for d in $test_dir/* ; do
+
     test_dir=$(basename $d)
     rm -rf $data_dir/$test_dir
     mkdir $data_dir/$test_dir
     ./audiodataprep.sh $d $data_dir $test_dir
     ./utils/fix_data_dir.sh $data_dir/$test_dir
 
-echo ============================================================================
-echo "     MFCC Feature Extraction and Mean-Variance Tuning Files for Training  	        "
-echo ============================================================================
+echo "     MFCC Feature Extraction and Mean-Variance Tuning Files for Testing  	        "
 
-./extractfeatures.sh $data_dir $test_dir
-./utils/fix_data_dir.sh $data_dir/$test_dir
-nj=1
+    ./extractfeatures.sh $data_dir $test_dir
+    ./utils/fix_data_dir.sh $data_dir/$test_dir
 
-echo
-echo "===== MONO DECODING ====="
-echo
-steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" exp/mono/graph data/$test_dir exp/mono/decode_$test_dir
+echo "     Runing Decoding script  	        "
 
+    ./test.sh $data_dir $test_dir
 
 
 done
