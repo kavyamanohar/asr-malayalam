@@ -67,4 +67,7 @@ cat $data_dir/train/tempspk2utt >> $data_dir/train/spk2utt
 cat $data_dir/train/tempwav.scp >> $data_dir/train/wav.scp
 cat $data_dir/train/temptext >> $data_dir/train/text
 
+./utils/fix_data_dir.sh $data_dir/train
+
+
 rm $data_dir/train/temp*

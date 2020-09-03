@@ -36,6 +36,14 @@ for d in $train_dir/* ; do
     echo "Corpus $d audio preparation"
     ./audiodataprep.sh $d $data_dir
 done
+
+echo ============================================================================
+echo "     MFCC Feature Extraction and Mean-Variance Tuning Files for Training  	        "
+echo ============================================================================
+
+./extractfeatures.sh $data_dir train
+
+
 echo ============================================================================
 echo "                   End of Script             	        "
 echo ============================================================================
