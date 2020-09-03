@@ -16,14 +16,14 @@ if [ "$#" -ne 2 ]; then
 fi
 
 data_dir=$1
-folder=$2
-echo "Feature extractiorn from $folder"
+train_or_test_dir=$2
+echo "Feature extractiorn from $train_or_test_dir"
 #Create feature vectors
-./steps/make_mfcc.sh --nj 4 $data_dir/$folder exp/make_mfcc/$folder mfcc
+./steps/make_mfcc.sh --nj 4 $data_dir/$train_or_test_dir exp/make_mfcc/$train_or_test_dir mfcc
 
 #Copy the feature in text file formats for human reading
-copy-feats ark:./mfcc/raw_mfcc_$folder.1.ark ark,t:./mfcc/raw_mfcc_$folder.1.txt
+copy-feats ark:./mfcc/raw_mfcc_$train_or_test_dir.1.ark ark,t:./mfcc/raw_mfcc_$train_or_test_dir.1.txt
 
 
 # #Create Mean Variance Tuning
-steps/compute_cmvn_stats.sh $data_dir/$folder exp/make_mfcc/$folder mfcc
+steps/compute_cmvn_stats.sh $data_dir/$train_or_test_dir exp/make_mfcc/$train_or_test_dir mfcc
