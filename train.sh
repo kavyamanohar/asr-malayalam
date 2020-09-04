@@ -50,11 +50,9 @@ steps/train_deltas.sh --boost_silence 1.25 --cmd "$train_cmd" $tri1sen $tri1gaus
 utils/mkgraph.sh data/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss/graph || exit 1
                 
 
-# show-alignments data/lang_bigram/phones.txt exp/mono/40.mdl 'ark:gunzip -c exp/mono/ali.4.gz|'  > "alignment.txt"
-
 echo "===== TRI_LDA (second triphone pass) ALIGNMENT ====="
 
-steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri1_$tri1sen\_$tri1gauss\_ali
+steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss\_ali
 
 trildasen=400
 trildagauss=17000
@@ -63,7 +61,7 @@ echo "========================="
 echo " Sen = $trildasen  Gauss = $trildagauss"
 echo "========================="
 
-steps/train_lda_mllt.sh --boost_silence 1.25 --splice-opts "--left-context=2 --right-context=2" $trildasen $trildagauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri1_$tri1sen\_$tri1gauss_ali $exp/tri_$trildasen\_$trildagauss\_lda
+steps/train_lda_mllt.sh --boost_silence 1.25 --splice-opts "--left-context=2 --right-context=2" $trildasen $trildagauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss\_ali $exp/tri_$trildasen\_$trildagauss\_lda
 utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda/graph 
 
 echo "===== TRI_SAT (third triphone pass) ALIGNMENT ====="
@@ -74,7 +72,7 @@ echo "===== TRI_SAT (third triphone pass) SAT Training ====="
 echo
 
 trisatsen=550
-trisatgauss=18000; do 
+trisatgauss=18000
 echo "========================="
 echo " Sen = $trisatsen  Gauss = $trisatgauss"
 echo "========================="
