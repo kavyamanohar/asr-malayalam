@@ -155,7 +155,14 @@ echo "$0: Looking for language model training sentences files in $language_dir"
 echo "$language_dir/lm_train.txt has the following contents"
 head $language_dir/lm_train.txt
 
-cat $language_dir/lm_train.txt > $data_dir/$train_folder/lm_train.txt
+echo "Creating LM model creation input file"
+while read line
+do
+echo "<s> $line </s>" >> $data_dir/$train_folder/lm_train.txt
+done <$language_dir/lm_train.txt
+
+head $data_dir/$train_folder/lm_train.txt
+# cat $language_dir/lm_train.txt > $data_dir/$train_folder/lm_train.txt
 
 $kaldi_root_dir/tools/irstlm/bin/build-lm.sh -i $data_dir/$train_folder/lm_train.txt -n $n_gram -o  $data_dir/local/tmp_$train_lang/lm_phone_bg.ilm.gz
 

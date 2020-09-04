@@ -3,11 +3,12 @@
 #set the paths to binaries and other executables
 [ -f path.sh ] && . ./path.sh
 
-#Choose the Phonetic modeling here
+# Kavya Manohar(2020)
+
 
 if [ "$#" -ne 1 ]; then
     echo "ERROR: $0"
-    echo "USAGE: $0 <data_dir>
+    echo "USAGE: $0 <data_dir>"
     exit 1
 fi
 
@@ -22,85 +23,71 @@ echo "     Acoustic Model Training    	        "
 echo ============================================================================
 
 train_folder=train
-nj=2
+nj=4
 
 
 echo "===== MONO TRAINING ====="
-# echo
 
-steps/train_mono.sh --nj $nj --cmd "$train_cmd"  $data_dir/$train_folder data/$train_lang $exp/mono  || exit 1
+steps/train_mono.sh --nj $nj --cmd "$train_cmd"  $data_dir/$train_folder $data_dir/$train_lang $exp/mono  || exit 1
 utils/mkgraph.sh --mono data/$train_lang $exp/mono $exp/mono/graph || exit 1
 
 
-# echo
-# echo "===== MONO ALIGNMENT ====="
-# echo
-# steps/align_si.sh --nj $nj --cmd "$train_cmd" data/$train_folder data/$train_lang $exp/mono $exp/mono_ali || exit 1
+echo
+echo "===== MONO ALIGNMENT ====="
+echo
+steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder $data_dir/$train_lang $exp/mono $exp/mono_ali || exit 1
 
-# echo
-# echo "===== TRI1 (first triphone pass) TRAINING ====="
-# echo
-# for sen in 150 ; do 
-# for gauss in 12000 ; do 
+echo
+echo "===== TRI1 (first triphone pass) TRAINING ====="
+echo
+tri1sen=150
+tri1gauss=12000
+echo "========================="
+echo " Sen = $tri1sen  Gauss = $tri1gauss"
+echo "========================="
 
-# echo "========================="
-# echo " Sen = $sen  Gauss = $gauss"
-# echo "========================="
-
-# steps/train_deltas.sh --boost_silence 1.25 --cmd "$train_cmd" $sen $gauss data/$train_folder data/$train_lang $exp/mono_ali $exp/tri_$sen\_$gauss || exit 1
-# utils/mkgraph.sh data/$train_lang $exp/tri_$sen\_$gauss $exp/tri_$sen\_$gauss/graph || exit 1
+steps/train_deltas.sh --boost_silence 1.25 --cmd "$train_cmd" $tri1sen $tri1gauss $data_dir/$train_folder $data_dir/$train_lang $exp/mono_ali $exp/tri_$tri1sen\_$tri1gauss || exit 1
+utils/mkgraph.sh data/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss/graph || exit 1
                 
-
-# done;done
-
-
 
 # show-alignments data/lang_bigram/phones.txt exp/mono/40.mdl 'ark:gunzip -c exp/mono/ali.4.gz|'  > "alignment.txt"
 
-# echo "===== TRI_LDA (second triphone pass) ALIGNMENT ====="
+echo "===== TRI_LDA (second triphone pass) ALIGNMENT ====="
 
-# steps/align_si.sh --nj $nj --cmd "$train_cmd" data/$train_folder/ data/$train_lang $exp/tri_200_16000 $exp/tri1_200_16000_ali
+steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri1_$tri1sen\_$tri1gauss\_ali
 
-# echo "===== TRI_LDA (second triphone pass) LDA Training ====="
-# echo
+trildasen=400
+trildagauss=17000
 
-# for sen in 400; do 
-# for gauss in 17000 ; do 
+echo "========================="
+echo " Sen = $trildasen  Gauss = $trildagauss"
+echo "========================="
 
-# echo "========================="
-# echo " Sen = $sen  Gauss = $gauss"
-# echo "========================="
+steps/train_lda_mllt.sh --boost_silence 1.25 --splice-opts "--left-context=2 --right-context=2" $trildasen $trildagauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri1_$tri1sen\_$tri1gauss_ali $exp/tri_$trildasen\_$trildagauss\_lda
+utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda/graph 
 
-# steps/train_lda_mllt.sh --boost_silence 1.25 --splice-opts "--left-context=2 --right-context=2" $sen $gauss data/$train_folder data/$train_lang $exp/tri1_200_16000_ali $exp/tri_$sen\_$gauss\_lda
-# utils/mkgraph.sh data/$train_lang $exp/tri_$sen\_$gauss\_lda $exp/tri_$sen\_$gauss\_lda/graph 
+echo "===== TRI_SAT (third triphone pass) ALIGNMENT ====="
+echo
+steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda_ali
 
-# done; done
+echo "===== TRI_SAT (third triphone pass) SAT Training ====="
+echo
 
-
-# echo "===== TRI_SAT (third triphone pass) ALIGNMENT ====="
-# echo
-# steps/align_si.sh --nj $nj --cmd "$train_cmd" data/$train_folder/ data/$train_lang $exp/tri_400_17000_lda $exp/tri_400_17000_lda_ali
-
-# echo "===== TRI_SAT (third triphone pass) SAT Training ====="
-# echo
-
-# for sen in 550  ; do 
-# for gauss in 18000; do 
-# echo "========================="
-# echo " Sen = $sen  Gauss = $gauss"
-# echo "========================="
+trisatsen=550
+trisatgauss=18000; do 
+echo "========================="
+echo " Sen = $trisatsen  Gauss = $trisatgauss"
+echo "========================="
 
 
-# steps/train_sat.sh --boost_silence 1.25 --cmd "$train_cmd" \
-# $sen $gauss data/$train_folder data/$train_lang $exp/tri_400_17000_lda_ali $exp/tri_$sen\_$gauss\_sat || exit 1;
-# utils/mkgraph.sh data/$train_lang $exp/tri_$sen\_$gauss\_sat $exp/tri_$sen\_$gauss\_sat/graph 
-
-# done; done
+steps/train_sat.sh --boost_silence 1.25 --cmd "$train_cmd" \
+$trisatsen $trisatgauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/tri_$trisatsen\_$trisatgauss\_sat || exit 1;
+utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trisatsen\_$trisatgauss\_sat $exp/tri_$trisatsen\_$trisatgauss\_sat/graph 
 
 
-echo ============================================================================
-echo "                    DNN Hybrid Training                   "
-echo ============================================================================
+# echo ============================================================================
+# echo "                    DNN Hybrid Training                   "
+# echo ============================================================================
 
 # steps/align_si.sh --nj "$nj" --cmd "$train_cmd" data/$train_folder/ data/$train_lang exp/tri_400_17000_lda exp/tri_400_17000_lda_ali || exit 1;
 
