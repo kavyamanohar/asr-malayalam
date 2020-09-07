@@ -57,7 +57,7 @@ echo "     Acoustic Model Training Compiling Decoding Graphs  	        "
 echo ============================================================================
 # ./utils/fix_data_dir.sh $data_dir/train
 
-# ./train.sh $data_dir 
+./train.sh $data_dir 
 
 echo ============================================================================
 echo "     Testing   	        "
