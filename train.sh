@@ -28,14 +28,14 @@ nj=4
 
 echo "===== MONO TRAINING ====="
 
-steps/train_mono.sh --nj $nj --cmd "$train_cmd"  $data_dir/$train_folder $data_dir/$train_lang $exp/mono  || exit 1
-utils/mkgraph.sh --mono data/$train_lang $exp/mono $exp/mono/graph || exit 1
+# steps/train_mono.sh --nj $nj --cmd "$train_cmd"  $data_dir/$train_folder $data_dir/$train_lang $exp/mono  || exit 1
+# utils/mkgraph.sh --mono data/$train_lang $exp/mono $exp/mono/graph || exit 1
 
 
 echo
 echo "===== MONO ALIGNMENT ====="
 echo
-steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder $data_dir/$train_lang $exp/mono $exp/mono_ali || exit 1
+# steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder $data_dir/$train_lang $exp/mono $exp/mono_ali || exit 1
 
 echo
 echo "===== TRI1 (first triphone pass) TRAINING ====="
@@ -46,13 +46,13 @@ echo "========================="
 echo " Sen = $tri1sen  Gauss = $tri1gauss"
 echo "========================="
 
-steps/train_deltas.sh --boost_silence 1.25 --cmd "$train_cmd" $tri1sen $tri1gauss $data_dir/$train_folder $data_dir/$train_lang $exp/mono_ali $exp/tri_$tri1sen\_$tri1gauss || exit 1
-utils/mkgraph.sh data/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss/graph || exit 1
+# steps/train_deltas.sh --boost_silence 1.25 --cmd "$train_cmd" $tri1sen $tri1gauss $data_dir/$train_folder $data_dir/$train_lang $exp/mono_ali $exp/tri_$tri1sen\_$tri1gauss || exit 1
+# utils/mkgraph.sh data/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss/graph || exit 1
                 
 
 echo "===== TRI_LDA (second triphone pass) ALIGNMENT ====="
 
-steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss\_ali
+# steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss $exp/tri_$tri1sen\_$tri1gauss\_ali
 
 trildasen=400
 trildagauss=17000
@@ -61,12 +61,12 @@ echo "========================="
 echo " Sen = $trildasen  Gauss = $trildagauss"
 echo "========================="
 
-steps/train_lda_mllt.sh --boost_silence 1.25 --splice-opts "--left-context=2 --right-context=2" $trildasen $trildagauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss\_ali $exp/tri_$trildasen\_$trildagauss\_lda
-utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda/graph 
+# steps/train_lda_mllt.sh --boost_silence 1.25 --splice-opts "--left-context=2 --right-context=2" $trildasen $trildagauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$tri1sen\_$tri1gauss\_ali $exp/tri_$trildasen\_$trildagauss\_lda
+# utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda/graph 
 
 echo "===== TRI_SAT (third triphone pass) ALIGNMENT ====="
 echo
-steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda_ali
+# steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda_ali
 
 echo "===== TRI_SAT (third triphone pass) SAT Training ====="
 echo
@@ -78,33 +78,33 @@ echo " Sen = $trisatsen  Gauss = $trisatgauss"
 echo "========================="
 
 
-steps/train_sat.sh --boost_silence 1.25 --cmd "$train_cmd" \
-$trisatsen $trisatgauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/tri_$trisatsen\_$trisatgauss\_sat || exit 1;
-utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trisatsen\_$trisatgauss\_sat $exp/tri_$trisatsen\_$trisatgauss\_sat/graph 
+# steps/train_sat.sh --boost_silence 1.25 --cmd "$train_cmd" \
+# $trisatsen $trisatgauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/tri_$trisatsen\_$trisatgauss\_sat || exit 1;
+# utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trisatsen\_$trisatgauss\_sat $exp/tri_$trisatsen\_$trisatgauss\_sat/graph 
 
 
-# echo ============================================================================
-# echo "                    DNN Hybrid Training                   "
-# echo ============================================================================
+echo ============================================================================
+echo "                    DNN Hybrid Training                   "
+echo ============================================================================
 
-# steps/align_si.sh --nj "$nj" --cmd "$train_cmd" data/$train_folder/ data/$train_lang exp/tri_400_17000_lda exp/tri_400_17000_lda_ali || exit 1;
+# steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda_ali
 
-# DNN hybrid system training parameters
+DNN hybrid system training parameters
 
-# for hiddenlayersize in 2 ; do 
-# for minibatchsize in 64; do 
-# for nodes in 128; do
-# for numepochs in 10 ; do
-# echo "========================="
-# echo " hiddenlayer = $hiddenlayersize  minibatchsize = $minibatchsize nodes = $nodes numepochs=$numepochs "
-# # echo "========================="
+for hiddenlayersize in 2 ; do 
+for minibatchsize in 64; do 
+for nodes in 128; do
+for numepochs in 10 ; do
+echo "========================="
+echo " hiddenlayer = $hiddenlayersize  minibatchsize = $minibatchsize nodes = $nodes numepochs=$numepochs "
+echo "========================="
 
-# steps/nnet2/train_tanh.sh --mix-up 5000 --initial-learning-rate 0.015 \
-#  --final-learning-rate 0.002 --num-hidden-layers $hiddenlayersize --minibatch-size $minibatchsize --hidden-layer-dim $nodes \
-#  --num-jobs-nnet "$nj" --cmd "$train_cmd" --num-epochs $numepochs \
-#   data/$train_folder/ data/$train_lang $exp/tri_400_17000_lda_ali $exp/DNN_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs
+steps/nnet2/train_tanh.sh --mix-up 5000 --initial-learning-rate 0.015 \
+ --final-learning-rate 0.002 --num-hidden-layers $hiddenlayersize --minibatch-size $minibatchsize --hidden-layer-dim $nodes \
+ --num-jobs-nnet "$nj" --cmd "$train_cmd" --num-epochs $numepochs \
+  $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/DNN2_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs
 
-# done; done; done; done
+done; done; done; done
 
 # echo ============================================================================
 # echo "                    TDNN Hybrid Training tri3 Aligned                  "

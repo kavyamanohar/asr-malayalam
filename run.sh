@@ -21,9 +21,9 @@ train_dir=$1/train
 test_dir=$1/test
 
 Remove existing data
-rm -rf data
-rm -rf exp
-rm -rf mfcc
+# rm -rf data
+# rm -rf exp
+# rm -rf mfcc
 
 
 
@@ -31,33 +31,33 @@ echo ===========================================================================
 echo "                  Running the script for Language Model Creation   	        "
 echo ============================================================================
 
-./createLM.sh $language_dir $data_dir
+# ./createLM.sh $language_dir $data_dir
 
 echo ============================================================================
 echo "  Preparing Audio Training Data (Combines files from all training corpora)  	        "
 echo ============================================================================
-rm -rf $data_dir/train
-mkdir $data_dir/train
-for d in $train_dir/* ; do
-    echo "Corpus $d audio preparation"
-    ./audiodataprep.sh $d $data_dir train
-done
+# rm -rf $data_dir/train
+# mkdir $data_dir/train
+# for d in $train_dir/* ; do
+#     echo "Corpus $d audio preparation"
+#     ./audiodataprep.sh $d $data_dir train
+# done
 
-./utils/fix_data_dir.sh $data_dir/train
+# ./utils/fix_data_dir.sh $data_dir/train
 
 
 echo ============================================================================
 echo "     MFCC Feature Extraction and Mean-Variance Tuning Files for Training  	        "
 echo ============================================================================
 
-./extractfeatures.sh $data_dir train
+# ./extractfeatures.sh $data_dir train
 
 echo ============================================================================
 echo "     Acoustic Model Training Compiling Decoding Graphs  	        "
 echo ============================================================================
-./utils/fix_data_dir.sh $data_dir/train
+# ./utils/fix_data_dir.sh $data_dir/train
 
-./train.sh $data_dir 
+# ./train.sh $data_dir 
 
 echo ============================================================================
 echo "     Testing   	        "
@@ -67,21 +67,21 @@ echo ===========================================================================
 for d in $test_dir/* ; do
 
     test_dir=$(basename $d)
-    rm -rf $data_dir/$test_dir
-    mkdir $data_dir/$test_dir
-    ./audiodataprep.sh $d $data_dir $test_dir
-    ./utils/fix_data_dir.sh $data_dir/$test_dir
+    # rm -rf $data_dir/$test_dir
+    # mkdir $data_dir/$test_dir
+    # ./audiodataprep.sh $d $data_dir $test_dir
+    # ./utils/fix_data_dir.sh $data_dir/$test_dir
 
 echo "     MFCC Feature Extraction and Mean-Variance Tuning for Testing  	        "
 
-    ./extractfeatures.sh $data_dir $test_dir
-    ./utils/fix_data_dir.sh $data_dir/$test_dir
+    # ./extractfeatures.sh $data_dir $test_dir
+    # ./utils/fix_data_dir.sh $data_dir/$test_dir
 
 echo "     Runing Decoding scripts  	        "
 
     for model_dir in exp/* ; do
 
-    if [ "$model_dir" != "exp/make_mfcc" ]; then
+    if [[ "$model_dir" != "exp/"*"_ali" ]]; then
         echo "Decoding with the model $model_dir"
         ./test.sh $data_dir $test_dir $model_dir
     fi

@@ -21,10 +21,20 @@ test_dir=$2
 model_dir=$3
 nj=1
 
+if [[ "$model_dir" != "exp/DNN2"* ]];
+then
 echo
-echo "===== DECODING ====="
+echo "===== DECODING GMM-HMM====="
 echo
-steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" $model_dir/graph $data_dir/$test_dir $model_dir/decode_$test_dir
+# steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" $model_dir/graph $data_dir/$test_dir $model_dir/decode_$test_dir
+else
+echo
+echo "===== DECODING NN2 ====="
+echo
+steps/nnet2/decode.sh --cmd "$decode_cmd" --nj "$nj" \
+ $model_dir/graph $data_dir/$test_dir \
+  $model_dir/decode_$test_dir/decode_$test_dir
+fi
 
 mkdir RESULT
 echo "Saving Results"
