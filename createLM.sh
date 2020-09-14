@@ -99,9 +99,8 @@ dict_dir=${data_dir}/local/dict
 kaldi_root_dir='../..'
 
 train_dict=dict
-train_lang=lang_bigram
+train_lang=lang_ngram
 train_folder=train_lm
-
 
 mkdir -p $data_dir/local/dict
 mkdir $data_dir/local/tmp_$train_lang
