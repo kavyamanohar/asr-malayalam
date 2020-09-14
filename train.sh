@@ -89,7 +89,7 @@ echo ===========================================================================
 
 # steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda_ali
 
-DNN hybrid system training parameters
+#DNN hybrid system training parameters
 
 for hiddenlayersize in 2 ; do 
 for minibatchsize in 64; do 
@@ -99,21 +99,24 @@ echo "========================="
 echo " hiddenlayer = $hiddenlayersize  minibatchsize = $minibatchsize nodes = $nodes numepochs=$numepochs "
 echo "========================="
 
-steps/nnet2/train_tanh.sh --mix-up 5000 --initial-learning-rate 0.015 \
- --final-learning-rate 0.002 --num-hidden-layers $hiddenlayersize --minibatch-size $minibatchsize --hidden-layer-dim $nodes \
- --num-jobs-nnet "$nj" --cmd "$train_cmd" --num-epochs $numepochs \
-  $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/DNN2_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs
+# steps/nnet2/train_tanh.sh --mix-up 5000 --initial-learning-rate 0.015 \
+#  --final-learning-rate 0.002 --num-hidden-layers $hiddenlayersize --minibatch-size $minibatchsize --hidden-layer-dim $nodes \
+#  --num-jobs-nnet "$nj" --cmd "$train_cmd" --num-epochs $numepochs \
+#   $data_dir/$train_folder/ $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/DNN2_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs
 
+# ln -rsv $exp/tri_$trildasen\_$trildagauss\_lda/graph $exp/DNN2_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs/
 done; done; done; done
 
-# echo ============================================================================
-# echo "                    TDNN Hybrid Training tri3 Aligned                  "
-# echo ============================================================================
-# #Note: Check the  steps/nnet3/tdnn/train.sh to know whether we are using i-vectors or not
+echo ============================================================================
+echo "                    TDNN Hybrid Training tri3 Aligned                  "
+echo ============================================================================
+#Note: Check the  steps/nnet3/tdnn/train.sh to know whether we are using i-vectors or not
 
-# steps/nnet3/train_tdnn.sh --cmd "$train_cmd" --num-epochs 4 --minibatch-size 128 --use-gpu false \
-# --num-jobs-initial 4 --num-jobs-final 4 --initial-effective-lrate 0.0015 --final-effective-lrate 0.002 --align-use-gpu no  \
-# data/train2/ data/$train_lang exp/tri_sat_ali exp/TDNN_tri_sat_aligned
+steps/nnet3/train_tdnn.sh --cmd "$train_cmd" --num-epochs 4 --minibatch-size 128 --use-gpu false \
+--num-jobs-initial 4 --num-jobs-final 4 --initial-effective-lrate 0.0015 --final-effective-lrate 0.002 --align-use-gpu no  \
+$data_dir/$train_folder/ $data_dir/$train_lang  $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/TDNN_tri_lda_aligned
+
+ln -rsv $exp/tri_$trildasen\_$trildagauss\_lda/graph $exp/TDNN_tri_lda_aligned/
 
 echo ============================================================================
 echo "                   End of Script             	        "
