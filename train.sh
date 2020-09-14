@@ -37,7 +37,7 @@ echo "     Acoustic Model Training    	        "
 echo ============================================================================
 
 train_folder=train
-nj=1
+nj=4
 
 if [ $mono_sw == 1 ]; then
 
