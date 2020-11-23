@@ -127,6 +127,8 @@ sort $language_dir/lexicon.txt | paste >> $dict_dir/lexicon.txt
 
 echo "Creating the list of Phones"
 cat $dict_dir/lexicon.txt | cut -d '	' -f 2  - | tr ' ' '\n' | sort | uniq > $dict_dir/phones.txt
+sed -i '/^$/d ' $dict_dir/phones.txt #Delete blank lines form phones.txt
+
 
 cat $dict_dir/phones.txt | sed /$silencephone/d | sed /$spokennoicephone/d > $dict_dir/nonsilence_phones.txt 
 
