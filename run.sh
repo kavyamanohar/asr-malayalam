@@ -20,7 +20,7 @@ data_dir=./data
 train_dir=$1/train
 test_dir=$1/test
 
-
+# Switches are defined here
 createlm_sw=1
 traindataprep_sw=1
 train_sw=1
