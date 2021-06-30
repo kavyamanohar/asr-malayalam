@@ -9,7 +9,7 @@
 
 # USAGE:
 #
-#      ./audiodataprep.sh <audiocorpus_directory>
+#      ./audiodataprep.sh <audiocorpus_directory> <data_dir> <train_or_test_dir>
 #
 # INPUT:
 #
