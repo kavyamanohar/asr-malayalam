@@ -21,9 +21,10 @@ nj=4
 echo "Feature extractiorn from $train_or_test_dir"
 #Create feature vectors
 ./steps/make_mfcc.sh --nj $nj $data_dir/$train_or_test_dir exp/make_mfcc/$train_or_test_dir mfcc
+./utils/fix_data_dir.sh $data_dir/$2
 
 #Copy the feature in text file formats for human reading
-copy-feats ark:./mfcc/raw_mfcc_$train_or_test_dir.1.ark ark,t:./mfcc/raw_mfcc_$train_or_test_dir.1.txt
+# copy-feats ark:./mfcc/raw_mfcc_$train_or_test_dir.1.ark ark,t:./mfcc/raw_mfcc_$train_or_test_dir.1.txt
 
 
 # #Create Mean Variance Tuning
