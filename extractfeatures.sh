@@ -17,7 +17,7 @@ fi
 
 data_dir=$1
 train_or_test_dir=$2
-nj=4
+nj=8
 echo "Feature extractiorn from $train_or_test_dir"
 #Create feature vectors
 ./steps/make_mfcc.sh --nj $nj $data_dir/$train_or_test_dir exp/make_mfcc/$train_or_test_dir mfcc
