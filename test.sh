@@ -19,7 +19,7 @@ fi
 data_dir=$1
 test_dir=$2
 model_dir=$3
-nj=4
+nj=6
 
 
 
