@@ -21,7 +21,7 @@ mono_sw=1
 tri_sw=1
 trilda_sw=1
 trisat_sw=1
-nn2_sw=1
+nn2_sw=0
 
 tri1sen=150
 tri1gauss=12000

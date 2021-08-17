@@ -20,7 +20,7 @@ data_dir=./data
 train_dir=$1/train
 test_dir=$1/test
 
-# Switches are defined here
+# Switches for GMM-HMM training are defined here
 createlm_sw=1
 traindataprep_sw=1
 train_sw=1
@@ -68,7 +68,7 @@ echo "     Acoustic Model Training Compiling Decoding Graphs  	        "
 echo ============================================================================
 ./utils/fix_data_dir.sh $data_dir/train
 
-./train.sh $data_dir 
+./train_gmm.sh $data_dir 
 
 
 fi
@@ -105,7 +105,7 @@ echo "     Runing Decoding scripts  	        "
 
     if [[ "$model_dir" != "exp/"*"_ali" ]]; then
         echo "Decoding with the model $model_dir"
-        ./test.sh $data_dir $test_dir $model_dir
+        ./test_gmm.sh $data_dir $test_dir $model_dir
     fi
 
 
