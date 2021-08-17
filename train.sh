@@ -22,8 +22,6 @@ tri_sw=1
 trilda_sw=1
 trisat_sw=1
 nn2_sw=1
-nn3_sw=0
-
 
 tri1sen=150
 tri1gauss=12000
@@ -138,21 +136,6 @@ done; done; done; done
 
 fi
 
-if [ $nn3_sw == 1 ]; then
-
-echo ============================================================================
-echo "                    TDNN Hybrid Training tri3 Aligned                  "
-echo ============================================================================
-#Note: Check the  steps/nnet3/tdnn/train.sh to know whether we are using i-vectors or not
-numepochs=4
-
-steps/nnet3/train_tdnn.sh --cmd "$train_cmd" --num-epochs $numepochs --minibatch-size 128 --use-gpu false \
---num-jobs-initial 4 --num-jobs-final 4 --initial-effective-lrate 0.0015 --final-effective-lrate 0.002 --align-use-gpu no  \
-$data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/TDNN_tri_lda_aligned_layer
-
-ln -rsv $exp/tri_$trildasen\_$trildagauss\_lda/graph $exp/TDNN_tri_lda_aligned_$numepochs/
-
-fi
 echo ============================================================================
 echo "                   End of Script             	        "
 echo ============================================================================

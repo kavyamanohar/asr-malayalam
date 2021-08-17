@@ -32,14 +32,6 @@ case $model_dir in
         $model_dir/decode_$test_dir
       break
       ;;
-	exp/TDNN*)
-      echo
-      echo "===== DECODING NN3 TDNN ====="
-      steps/nnet3/decode.sh --cmd "$decode_cmd" --nj "$nj" \
-      $model_dir/graph $data_dir/$test_dir \
-        $model_dir/decode_$test_dir
-        break
-		;;
 	*)
       echo "===== DECODING GMM-HMM====="
       steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" $model_dir/graph $data_dir/$test_dir $model_dir/decode_$test_dir
