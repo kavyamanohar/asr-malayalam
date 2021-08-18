@@ -22,21 +22,9 @@ model_dir=$3
 nj=6
 
 
+echo "===== DECODING GMM-HMM====="
+steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" $model_dir/graph $data_dir/$test_dir $model_dir/decode_$test_dir
 
-case $model_dir in
-	exp/DNN2*)
-      echo "===== DECODING NN2 ====="
-      echo
-      steps/nnet2/decode.sh --cmd "$decode_cmd" --nj "$nj" \
-      $model_dir/graph $data_dir/$test_dir \
-        $model_dir/decode_$test_dir
-      break
-      ;;
-	*)
-      echo "===== DECODING GMM-HMM====="
-      steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" $model_dir/graph $data_dir/$test_dir $model_dir/decode_$test_dir
-    ;;
-esac
 
 
 

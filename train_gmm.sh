@@ -21,7 +21,6 @@ mono_sw=1
 tri_sw=1
 trilda_sw=1
 trisat_sw=1
-nn2_sw=0
 
 tri1sen=150
 tri1gauss=12000
@@ -104,35 +103,6 @@ steps/train_sat.sh --boost_silence 1.25 --cmd "$train_cmd" \
 $trisatsen $trisatgauss $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/tri_$trisatsen\_$trisatgauss\_sat || exit 1;
 
 utils/mkgraph.sh $data_dir/$train_lang $exp/tri_$trisatsen\_$trisatgauss\_sat $exp/tri_$trisatsen\_$trisatgauss\_sat/graph 
-
-fi
-
-if [ $nn2_sw == 1 ]; then
-
-echo ============================================================================
-echo "                    DNN Hybrid Training                   "
-echo ============================================================================
-
-# steps/align_si.sh --nj $nj --cmd "$train_cmd" $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda $exp/tri_$trildasen\_$trildagauss\_lda_ali
-
-#DNN hybrid system training parameters
-
-for hiddenlayersize in 2 ; do 
-for minibatchsize in 64; do 
-for nodes in 128; do
-for numepochs in 10 ; do
-echo "========================="
-echo " hiddenlayer = $hiddenlayersize  minibatchsize = $minibatchsize nodes = $nodes numepochs=$numepochs "
-echo "========================="
-
-steps/nnet2/train_tanh.sh --mix-up 5000 --initial-learning-rate 0.015 \
- --final-learning-rate 0.002 --num-hidden-layers $hiddenlayersize --minibatch-size $minibatchsize --hidden-layer-dim $nodes \
- --num-jobs-nnet "$nj" --cmd "$train_cmd" --num-epochs $numepochs \
-  $data_dir/$train_folder $data_dir/$train_lang $exp/tri_$trildasen\_$trildagauss\_lda_ali $exp/DNN2_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs
-
-
-ln -rsv $exp/tri_$trildasen\_$trildagauss\_lda/graph $exp/DNN2_tri_lda_aligned_layer_$hiddenlayersize\_$nodes\_$numepochs/
-done; done; done; done
 
 fi
 
