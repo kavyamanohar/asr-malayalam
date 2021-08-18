@@ -13,7 +13,7 @@ nj=50
 data_folder=data
 exp_folder=exp
 train_set=train # you might set this to e.g. train.
-test_sets="openslr_test msc"
+test_sets="openslr_test"
 gmm=tri_400_17000_lda                # This specifies a GMM-dir from the features of the type you're training the system on;
                          # it should contain alignments for 'train_set'.
 
@@ -23,14 +23,14 @@ nj_extractor=10
 # It runs a JOB with '-pe smp N', where N=$[threads*processes]
 num_processes_extractor=4
 num_threads_extractor=4
-lang=lang_nosp
+lang=lang_ngram
 
 nnet3_affix=             # affix for exp/nnet3 directory to put iVector stuff in (e.g.
                          # in the tedlium recip it's _cleaned).
 
-#. ./cmd.sh
-#. ./path.sh
-#. utils/parse_options.sh
+. ./cmd.sh
+. ./path.sh
+. utils/parse_options.sh
 
 
 gmm_dir=$exp_folder/${gmm}
@@ -152,7 +152,7 @@ if [ $stage -le 5 ]; then
   # perturbation (sp).
   for data in ${test_sets}; do
     nspk=$(wc -l <$data_folder/${data}_hires/spk2utt)
-    nspk_nj=10
+    nspk_nj=7
     steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj "${nspk_nj}" \
       $data_folder/${data}_hires $exp_folder/nnet3${nnet3_affix}/extractor \
       $exp_folder/nnet3${nnet3_affix}/ivectors_${data}_hires
