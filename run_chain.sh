@@ -291,7 +291,8 @@ if [ $stage -le 18 ]; then
           	  --online-ivector-dir $expdir/nnet3/ivectors_${data}_hires \
           	  $tree_dir/graph $datadir/${data}_hires ${dir}/decode_${data} || exit 1
       		#done
-			cat ${dir}/decode_${data}/scoring_kaldi/best_wer >> RESULT/${dir}\_${data}.txt
+			model=$(basename $dir)
+			cat ${dir}/decode_${data}/scoring_kaldi/best_wer >> RESULT/${data}\_${model}.txt
 :<<"over"
         steps/lmrescore.sh \
           --self-loop-scale 1.0 \
