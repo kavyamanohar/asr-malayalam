@@ -13,7 +13,7 @@ nj=50
 data_folder=data
 exp_folder=exp
 train_set=train # you might set this to e.g. train.
-test_sets="openslr_test"
+test_sets="openslr_test msc iiith"
 gmm=tri_400_17000_lda                # This specifies a GMM-dir from the features of the type you're training the system on;
                          # it should contain alignments for 'train_set'.
 

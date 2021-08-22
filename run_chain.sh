@@ -21,7 +21,7 @@ tag=   #experiment tag, so that models are not overwritten; make sure change thi
 expdir=exp
 datadir=data #Give the absolute path in case your data directory is not present in the current working directory
 train_set=train        #Train set Name
-test_sets="openslr_test"        #"test_dev93 test_eval92"
+test_sets="openslr_test msc iiith"        #"test_dev93 test_eval92"
 #The best TRI3 MODEL
 gmm=tri_400_17000_lda  #tri4b # this is the source gmm-dir that we'll use for alignments; it
                             # should have alignments for the specified training data.
