@@ -19,7 +19,8 @@ fi
 data_dir=$1
 test_dir=$2
 model_dir=$3
-nj=6
+nspk=$(wc -l <$data_dir/$test_dir/spk2utt)
+nj=$nspk
 
 
 echo "===== DECODING GMM-HMM====="
@@ -31,7 +32,7 @@ steps/decode.sh --config conf/decode.config --nj $nj --cmd "$decode_cmd" $model_
 mkdir RESULT
 echo "Saving Results"
 model=$(basename $model_dir)
-cat $model_dir/decode_$test_dir/scoring_kaldi/best_wer >> RESULT/$model\_$test_dir.txt
+cat $model_dir/decode_$test_dir/scoring_kaldi/best_wer >> RESULT/$test_dir\_$model.txt
 
 
 echo ============================================================================
