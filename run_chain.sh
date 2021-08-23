@@ -13,7 +13,7 @@ set -e -o pipefail
 
 #PLEASE EDIT THE FOLLOWING BEFORE RUNNING THE SCRIPT. Should match the parameters of run_gmm.sh script for the same experiment 
  
-# First the options that are passed through to run_ivector_common.sh
+# First the options that are passed through to run_ivector_common.sh (The current script does not pass arguments to run_ivector_common.sh)
 # (some of which are also used in this script directly).
 stage=0  #0
 nj=5
@@ -71,15 +71,16 @@ EOF
 fi
 date
 
-./run_ivector_common.sh \
- --stage $stage --nj $nj \
- --train-set $train_set --gmm $gmm --test-sets $test_sets --data-folder $datadir --exp-folder $expdir \
- --num-threads-ubm $num_threads_ubm \
- --nj-extractor $nj_extractor \
- --num-processes-extractor $num_processes_extractor \
- --num-threads-extractor $num_threads_extractor \
- --nnet3-affix "$nnet3_affix"
-echo " 1 "
+./run_ivector_common.sh
+# ./run_ivector_common.sh \
+#  --stage $stage --nj $nj \
+#  --train-set $train_set --gmm $gmm --test-sets $test_sets --data-folder $datadir --exp-folder $expdir \
+#  --num-threads-ubm $num_threads_ubm \
+#  --nj-extractor $nj_extractor \
+#  --num-processes-extractor $num_processes_extractor \
+#  --num-threads-extractor $num_threads_extractor \
+#  --nnet3-affix "$nnet3_affix"
+
 date
 
 gmm_dir=$expdir/${gmm}

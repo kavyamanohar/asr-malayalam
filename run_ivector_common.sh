@@ -17,7 +17,7 @@ test_sets="openslr_test msc iiith"
 gmm=tri_400_17000_lda                # This specifies a GMM-dir from the features of the type you're training the system on;
                          # it should contain alignments for 'train_set'.
 
-num_threads_ubm=32
+num_threads_ubm=30
 
 nj_extractor=10
 # It runs a JOB with '-pe smp N', where N=$[threads*processes]
@@ -36,13 +36,13 @@ nnet3_affix=             # affix for exp/nnet3 directory to put iVector stuff in
 gmm_dir=$exp_folder/${gmm}
 ali_dir=$exp_folder/${gmm}_ali_${train_set}_sp
 
+
 for f in $data_folder/${train_set}/feats.scp ${gmm_dir}/final.mdl; do
   if [ ! -f $f ]; then
     echo "$0: expected file $f to exist"
     exit 1
   fi
 done
-
 
 
 if [ $stage -le 2 ] && [ -f $data_folder/${train_set}_sp_hires/feats.scp ]; then
