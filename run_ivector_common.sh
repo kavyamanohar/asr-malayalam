@@ -152,7 +152,7 @@ if [ $stage -le 5 ]; then
   # perturbation (sp).
   for data in ${test_sets}; do
     nspk=$(wc -l <$data_folder/${data}_hires/spk2utt)
-    nspk_nj=nspk
+    nspk_nj=$nspk
     steps/online/nnet2/extract_ivectors_online.sh --cmd "$train_cmd" --nj "${nspk_nj}" \
       $data_folder/${data}_hires $exp_folder/nnet3${nnet3_affix}/extractor \
       $exp_folder/nnet3${nnet3_affix}/ivectors_${data}_hires
